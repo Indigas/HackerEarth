@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class MonkAndSortingAlgorithm {
     private static Map<String, String> map = new HashMap<>();
+    private static Map<String, Integer> positions = new HashMap();
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(br.readLine());
@@ -36,6 +37,7 @@ public class MonkAndSortingAlgorithm {
                 if(fromTemp>-1) {
                     //chunk[j] = arraz[j].substring(fromTemp, toTemp);
                     map.put(arraz[j], arraz[j].substring(fromTemp, toTemp));
+                    positions.put(arraz[j], j);
                     onlyZeros = false;
                 }
                 else {
@@ -44,6 +46,7 @@ public class MonkAndSortingAlgorithm {
 
                     String tmp = arraz[j].substring(0, toTemp);
                     map.put(arraz[j], zeros.substring(0,-fromTemp)+tmp);
+                    positions.put(arraz[j], j);
 
                     onlyZeros = Long.parseLong(tmp) == 0;
                 }
@@ -52,9 +55,9 @@ public class MonkAndSortingAlgorithm {
             if(onlyZeros)
                 break;
 
-            mergeSort(copyOfOrigin, chunk, 0, chunk.length-1);
+            mergeSort(arraz, chunk, 0, chunk.length-1);
 
-            for(String a : copyOfOrigin)
+            for(String a : arraz)
                 System.out.print(a + " ");
 
             System.out.println();
@@ -99,10 +102,16 @@ public class MonkAndSortingAlgorithm {
                 temporary[i] = origin[mid+1] ;
                 mid++;
             } else if(first == second){
-                temporary[i++] = origin[start];
-                temporary[i] = origin[mid+1];
-                start++;
-                mid++;
+                if(positions.get(origin[start]) < positions.get(origin[mid+1])) {
+                    temporary[i] = origin[start++];
+                    //temporary[i] = origin[mid + 1];
+                } else {
+                    temporary[i] = origin[mid + 1];
+                    mid++;
+                    //temporary[i] = origin[start];
+                }
+                //start++;
+                //mid++;
             } else {
                 temporary[i] = origin[start];
                 start++;
