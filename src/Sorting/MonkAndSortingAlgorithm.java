@@ -1,20 +1,25 @@
 package Sorting;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MonkAndSortingAlgorithm {
-    private static Map<String, String> map = new HashMap<>();
-    private static Map<String, Integer> positions = new HashMap();
+    private static Map<String, Long> map = new HashMap<>();
     public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String file = "C:\\Users\\durov\\Downloads\\1114918ab15d11ea.txt.clean.txt";
+
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = Files.newBufferedReader(Paths.get(file));
         int length = Integer.parseInt(br.readLine());
 
+        long startProgram = System.currentTimeMillis();
+
         String[] arraz = Arrays.stream(br.readLine().split(" ")).toArray(String[]::new);
-        String[] copyOfOrigin = Arrays.copyOf(arraz, arraz.length);
-        String[] chunk = new String[length];
+
+        br.close();
         String zeros = "00000";
         boolean onlyZeros = false;
 
@@ -29,33 +34,26 @@ public class MonkAndSortingAlgorithm {
                 int toTemp = arraz[j].length()-to;
 
                 if(toTemp<=0){
-                    //chunk[j] = zeros;
-                    map.put(arraz[j], zeros);
+                    map.put(arraz[j], 0L);
                     continue;
                 }
 
-                if(fromTemp>-1) {
-                    //chunk[j] = arraz[j].substring(fromTemp, toTemp);
-                    map.put(arraz[j], arraz[j].substring(fromTemp, toTemp));
-                    positions.put(arraz[j], j);
-                    onlyZeros = false;
+                if(fromTemp<0) {
+                    fromTemp=0;
                 }
-                else {
-                    //chunk[j] = arraz[j].substring(0, toTemp);
-                    //chunk[j] = zeros.substring(0,-fromTemp)+chunk[j];
 
-                    String tmp = arraz[j].substring(0, toTemp);
-                    map.put(arraz[j], zeros.substring(0,-fromTemp)+tmp);
-                    positions.put(arraz[j], j);
+                long tmp = Long.parseLong(arraz[j].substring(fromTemp, toTemp));
+                map.put(arraz[j], tmp);
 
-                    onlyZeros = Long.parseLong(tmp) == 0;
-                }
+                if(onlyZeros)
+                    onlyZeros = tmp == 0;
+
             }
 
             if(onlyZeros)
                 break;
 
-            mergeSort(arraz, chunk, 0, chunk.length-1);
+            mergeSort(arraz, 0, arraz.length-1);
 
             for(String a : arraz)
                 System.out.print(a + " ");
@@ -63,20 +61,24 @@ public class MonkAndSortingAlgorithm {
             System.out.println();
         }
 
+        long endProgram = System.currentTimeMillis();
+
+        System.out.printf("Program runs %d ms", endProgram - startProgram);
+
     }
 
-    private static void mergeSort(String[] origin, String[] chunk, int start, int end){
+    private static void mergeSort(String[] origin, int start, int end){
         if(start < end){
 
             int mid = (start + end) / 2;
-            mergeSort(origin, chunk, start, mid);
-            mergeSort(origin, chunk, mid+1, end);
+            mergeSort(origin, start, mid);
+            mergeSort(origin, mid+1, end);
 
-            merge(origin, chunk, start, mid, end);
+            merge(origin, start, mid, end);
         }
     }
 
-    private static void merge(String[] origin, String[] chunk, int start, int mid, int end){
+    private static void merge(String[] origin, int start, int mid, int end){
         String[] temporary = new String[end-start+1];
 
         int i;
@@ -93,34 +95,24 @@ public class MonkAndSortingAlgorithm {
                 continue;
             }
 
-            //long first = Long.parseLong(chunk[start]);
-            //long second = Long.parseLong(chunk[mid+1]);
-            long first = Long.parseLong(map.get(origin[start]));
-            long second = Long.parseLong(map.get(origin[mid+1]));
+            long first = map.get(origin[start]);
+            long second = map.get(origin[mid+1]);
 
             if(first > second) {
                 temporary[i] = origin[mid+1] ;
                 mid++;
             } else if(first == second){
-                if(positions.get(origin[start]) < positions.get(origin[mid+1])) {
-                    temporary[i] = origin[start++];
-                    //temporary[i] = origin[mid + 1];
-                } else {
-                    temporary[i] = origin[mid + 1];
-                    mid++;
-                    //temporary[i] = origin[start];
-                }
-                //start++;
-                //mid++;
+                temporary[i] = origin[start++];
+
             } else {
                 temporary[i] = origin[start];
                 start++;
             }
         }
 
-        int j=0;
-        for(i = startCopy,  j = 0; i<= end; i++, j++){
-            origin[i] = temporary[j];
-        }
+        System.arraycopy(temporary,0,origin, startCopy, temporary.length);
+
     }
+
+
 }
