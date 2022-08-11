@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 public class TheUnlucky13 {
     private static HashMap<Long, BigInteger> cache = new HashMap<>();
-    private static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        long mod = 1000000009L;
         int testCases = Integer.parseInt(br.readLine());
 
 
@@ -22,12 +22,19 @@ public class TheUnlucky13 {
         cache.put(5L,BigInteger.valueOf(96030L));
         cache.put(6L,BigInteger.valueOf(950599L));
 
+
+        long start=0L;
         for( ; testCases>0;testCases--){
             long stringLength = Long.parseLong(br.readLine());
+
+            if(start==0L)
+                start = System.currentTimeMillis();
 
             System.out.println(get(stringLength));
 
         }
+
+        System.out.println("Running time: " + (System.currentTimeMillis() - start));
     }
 
     private static BigInteger get(long stringLength){
@@ -35,6 +42,8 @@ public class TheUnlucky13 {
             return cache.get(stringLength);
 
         long mod = 1000000009L;
+
+
         BigInteger x = get(stringLength/2);
         BigInteger y = get(stringLength/2-1);
 
