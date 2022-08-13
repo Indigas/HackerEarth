@@ -3,13 +3,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MonkAndSortingAlgorithm {
     private static Map<String, Long> map = new HashMap<>();
+    private static int from;
+    private static int to;
+    private static boolean onlyZeros = false;
     public static void main(String[] args) throws Exception {
-        String file = "C:\\Users\\durov\\Downloads\\1114918ab15d11ea.txt.clean.txt";
+        String file = "C:\\Users\\durov\\Downloads\\110bae8ab15d11ea.txt.clean.txt";
 
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader br = Files.newBufferedReader(Paths.get(file));
@@ -21,13 +25,13 @@ public class MonkAndSortingAlgorithm {
 
         br.close();
         String zeros = "00000";
-        boolean onlyZeros = false;
 
         // chunk
-        for(int i = 1; ; i++){
-            onlyZeros = true;
-            int from = 5*i;
-            int to = 1+5*(i-1) - 1;
+        for(int i = 1; i < 3; i++){
+            map.clear();
+            from = 5*i;
+            to = 1+5*(i-1) - 1;
+
 
             for(int j = 0; j < length; j++){
                 int fromTemp = arraz[j].length()-from;
@@ -50,15 +54,20 @@ public class MonkAndSortingAlgorithm {
 
             }
 
-            if(onlyZeros)
-                break;
 
             mergeSort(arraz, 0, arraz.length-1);
 
-            for(String a : arraz)
-                System.out.print(a + " ");
 
-            System.out.println();
+            if(onlyZeros)
+                break;
+
+
+            StringBuilder sb = new StringBuilder();
+            for(String a : arraz)
+                sb.append(a).append(" ");
+
+            System.out.println(sb.toString());
+
         }
 
         long endProgram = System.currentTimeMillis();
@@ -113,6 +122,5 @@ public class MonkAndSortingAlgorithm {
         System.arraycopy(temporary,0,origin, startCopy, temporary.length);
 
     }
-
 
 }
