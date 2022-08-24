@@ -3,7 +3,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ public class MonkAndSortingAlgorithm {
     private static int from;
     private static int to;
     private static boolean onlyZeros = true;
-    private static int power;
+    private static long power;
     public static void main(String[] args) throws Exception {
         String file = "C:\\Users\\durov\\Downloads\\110bae8ab15d11ea.txt.clean.txt";
 
@@ -37,53 +36,33 @@ public class MonkAndSortingAlgorithm {
         br.close();
 
         // chunk
-        for(int i = 1; ; i++){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 1; i<3; i++){
             map.clear();
             onlyZeros = true;
             from = 5*i;
             to = 1+5*(i-1) - 1;
 
             int pow = (from-to)*i;
-            power = i;
-
-
-            /*for(int j = length; j < length; j++){
-                int fromTemp = arraz[j].length()-from;
-                int toTemp = arraz[j].length()-to;
-
-                if(toTemp<=0){
-                    map.put(arraz[j], 0L);
-                    continue;
-                }
-
-                if(fromTemp<0) {
-                    fromTemp=0;
-                }
-
-                long tmp = Long.parseLong(arraz[j].substring(fromTemp, toTemp));
-                map.put(arraz[j], tmp);
-
-                if(onlyZeros)
-                    onlyZeros = tmp == 0;
-
-            }*/
+            power = (long) Math.pow(10, pow);
 
             mergeSort(arraz, 0, arraz.length-1);
-            //Arrays.sort(arraz, Comparator.comparing(t -> calc(t)));
 
 
             if(onlyZeros)
                 break;
 
-            StringBuilder sb = new StringBuilder();
-            for(long a : arraz)
-                sb.append(a).append(" ");
 
-            System.out.println(sb.toString());
+            Arrays.stream(arraz).forEach(num -> sb.append(num).append(" "));
+            //for(long a : arraz)
+            //    sb.append(a).append(" ");
+
+            sb.append("\n");
 
         }
         long endProgram = System.currentTimeMillis();
 
+        System.out.println(sb.toString());
         System.out.printf("Program runs %d ms\n", endProgram - startProgram);
 
 
@@ -117,20 +96,14 @@ public class MonkAndSortingAlgorithm {
                 continue;
             }
 
-            //long first = map.get(origin[start]);
-            //long second = map.get(origin[mid+1]);
-            //long first = calc(origin[start]);
-            //long second = calc(origin[mid+1]);
-            double st = origin[start];
-            double md = origin[mid+1];
-                for (int a = 1; a <= power; a++)
-                    st = st / 100000;
+            double st = (origin[start] + 0.001d) / power;
+            double md = (origin[mid+1] + 0.001d) / power;
 
-                for (int a = 1; a <= power; a++)
-                    md = md / 100000;
+            //st = st / power;
+            //md = md / power;
 
-            long first = Math.round((st - ((long)st))*100000);
-            long second = Math.round((md - ((long)md))*100000);
+            long first = (long)((st - ((long)st))*100000);
+            long second = (long)((md - ((long)md))*100000);
 
             if(first != 0 || second != 0)
                 onlyZeros = false;
